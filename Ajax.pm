@@ -2,8 +2,8 @@ package Catalyst::Plugin::Ajax;
 
 use strict;
 
-our $VERSION = '0.01';
-our $http    = do { local $/; <DATA> };
+our $VERSION = '0.02';
+our $ajax    = do { local $/; <DATA> };
 
 =head1 NAME
 
@@ -17,14 +17,14 @@ Catalyst::Plugin::Ajax - Plugin for Ajax
     # ...add this to your tt2 template...
     [% c.include_ajax %]
 
-    # ...and get a ready to use ajax object named http.
+    # ...and get a ready to use ajax object named ajax.
     <script type="text/javascript"><!--
     function doEdit() {
-        http.post(
+        ajax.post(
             '[% base %]edit/[% page.title %]',
             'body=' + document.edit.body.value,
             function () {
-                var res = http.response();
+                var res = ajax.response();
                 if ( res && res.status == 200 )
                     document.getElementById('view').innerHTML = res.text;
             }
@@ -52,7 +52,7 @@ This plugin replaces L<Catalyst::Helper::Ajax>.
 
 sub include_ajax {
     my $c = shift;
-    return $http;
+    return $ajax;
 }
 
 =head1 SEE ALSO
@@ -75,12 +75,12 @@ the same terms as perl itself.
 1;
 __DATA__
 <script type="text/javascript"><!--
-var HTTP_SUCCESS         = 0;
-var HTTP_INVALIDOBJECT   = 1;
-var HTTP_INVALIDCALLBACK = 2;
-var HTTP_FAILEDOPEN      = 3;
+var AJAX_SUCCESS         = 0;
+var AJAX_INVALIDOBJECT   = 1;
+var AJAX_INVALIDCALLBACK = 2;
+var AJAX_FAILEDOPEN      = 3;
 
-function Http () {
+function Ajax () {
     this.version       = '0.6';
     this.isAsync       = false;
     this.agent         = null;
@@ -108,15 +108,15 @@ function Http () {
         }
     }
 
-   this.isValid  = callHttpIsValid;
-   this.get      = callHttpGet;
-   this.post     = callHttpPost;
-   this.open     = callHttpOpen;
-   this.request  = callHttpRequest;
-   this.response = callHttpResponse;
+   this.isValid  = callAjaxIsValid;
+   this.get      = callAjaxGet;
+   this.post     = callAjaxPost;
+   this.open     = callAjaxOpen;
+   this.request  = callAjaxRequest;
+   this.response = callAjaxResponse;
 }
 
-function HttpResponse() {
+function AjaxResponse() {
     this.status     = 0;
     this.statusText = '';
     this.headers    = new Array();
@@ -125,7 +125,7 @@ function HttpResponse() {
     this.xml        = '';
 }
 
-function HttpRequest() {
+function AjaxRequest() {
     this.method   = 'GET';
     this.url      = '';
     this.headers  = new Array();
@@ -133,15 +133,15 @@ function HttpRequest() {
     this.callback = null;
 }
 
-function callHttpGet( url, callback, headers ) {
+function callAjaxGet( url, callback, headers ) {
     return this.open( 'GET', url, null, callback, headers );
 }
 
-function callHttpIsValid() {
+function callAjaxIsValid() {
     return this.agent != null;
 }
 
-function callHttpOpen( method, url, data, callback, headers ) {
+function callAjaxOpen( method, url, data, callback, headers ) {
     if (this.isValid()) {
         if (!method)  method       = 'GET';
         if (!data)    data         = null;
@@ -149,7 +149,7 @@ function callHttpOpen( method, url, data, callback, headers ) {
 
         if (this.isAsync) {
             if ( typeof callback != 'function' )
-                return HTTP_INVALIDCALLBACK;
+                return AJAX_INVALIDCALLBACK;
             this.agent.onreadystatechange = callback;
         }
 
@@ -157,7 +157,7 @@ function callHttpOpen( method, url, data, callback, headers ) {
             this.agent.open( method, url, this.isAsync );
         } catch(e) {
             this.lastException = e;
-            return HTTP_FAILEDOPEN;
+            return AJAX_FAILEDOPEN;
         }
 
         if ( headers != null ) {
@@ -167,20 +167,20 @@ function callHttpOpen( method, url, data, callback, headers ) {
         }
 
         this.agent.send(data);
-        return HTTP_SUCCESS;
+        return AJAX_SUCCESS;
     }
-    return HTTP_INVALIDOBJECT;
+    return AJAX_INVALIDOBJECT;
 }
 
-function callHttpPost( url, data, callback, headers ) {
+function callAjaxPost( url, data, callback, headers ) {
     return this.open( 'POST', url, data, callback, headers );
 }
 
-function callHttpResponse() {
+function callAjaxResponse() {
     if ( this.agent.readyState != 4 )
         return null;
 
-    var res = new HttpResponse();
+    var res = new AjaxResponse();
 
     res.status      = this.agent.status;
     res.statusText  = typeof this.agent.statusText == 'undefined'
@@ -213,7 +213,7 @@ function callHttpResponse() {
     return res;
 }
 
-function callHttpRequest(req) {
+function callAjaxRequest(req) {
    return this.Open(
        req.method,
        req.url,
@@ -223,5 +223,5 @@ function callHttpRequest(req) {
    );
 }
 
-var http = new Http();
+var ajax = new Ajax();
 //--></script>
