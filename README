@@ -1,0 +1,49 @@
+NAME
+    Catalyst::Plugin::Ajax - Plugin for Ajax
+
+SYNOPSIS
+        # use it
+        use Catalyst qw/Ajax/;
+
+        # ...add this to your tt2 template...
+        [% c.include_ajax %]
+
+        # ...and get a ready to use ajax object named http.
+        <script type="text/javascript"><!--
+        function doEdit() {
+            http.post(
+                '[% base %]edit/[% page.title %]',
+                'body=' + document.edit.body.value,
+                function () {
+                    var res = http.response();
+                    if ( res && res.status == 200 )
+                        document.getElementById('view').innerHTML = res.text;
+                }
+            );
+        }
+        //--></script>
+
+        <div id="view"></div>
+        <form name="edit">
+            <textarea name="body" cols="80" rows="24"
+                onKeyup="doEdit()">[% page.body %]</textarea>
+        </form>
+
+DESCRIPTION
+    Some stuff to make Ajax fun.
+
+    This plugin replaces Catalyst::Helper::Ajax.
+
+  METHODS
+   include_ajax
+SEE ALSO
+    Catalyst::Manual, Catalyst::Test, Catalyst::Request, Catalyst::Response,
+    Catalyst::Helper
+
+AUTHOR
+    Sebastian Riedel, "sri@oook.de", Sascha Kiefer, "esskar@cpan.org"
+
+LICENSE
+    This library is free software . You can redistribute it and/or modify it
+    under the same terms as perl itself.
+
