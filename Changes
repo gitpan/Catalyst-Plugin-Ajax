@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::Plugin::Ajax
 
+0.04  Wed Apr 08 22:00:00 2005
+        - some small fixes
+
 0.03  Wed Mar 23 22:00:00 2005
         - refactored for use with HTML::Ajax
 

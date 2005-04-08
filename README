@@ -6,28 +6,13 @@ SYNOPSIS
         use Catalyst qw/Ajax/;
 
         # ...add this to your tt2 template...
-        [% c.include_ajax %]
+        [% c.ajax.library %]
 
-        # ...and get a ready to use ajax object named http.
-        <script type="text/javascript"><!--
-        function doEdit() {
-            http.post(
-                '[% base %]edit/[% page.title %]',
-                'body=' + document.edit.body.value,
-                function () {
-                    var res = http.response();
-                    if ( res && res.status == 200 )
-                        document.getElementById('view').innerHTML = res.text;
-                }
-            );
-        }
-        //--></script>
-
+        # ...and use the helper methods...
         <div id="view"></div>
-        <form name="edit">
-            <textarea name="body" cols="80" rows="24"
-                onKeyup="doEdit()">[% page.body %]</textarea>
-        </form>
+        <textarea id="editor" cols="80" rows="24"></textarea>
+        [% uri = base _ 'edit/' _ page.title %]
+        [% c.ajax.observe_field( 'editor', uri, 2, 'view', 'body' ) %]
 
 DESCRIPTION
     Some stuff to make Ajax fun.
@@ -35,13 +20,15 @@ DESCRIPTION
     This plugin replaces Catalyst::Helper::Ajax.
 
   METHODS
-   include_ajax
+   ajax
+        Returns a ready to use L<HTML::Ajax> object.
+
 SEE ALSO
     Catalyst::Manual, Catalyst::Test, Catalyst::Request, Catalyst::Response,
     Catalyst::Helper
 
 AUTHOR
-    Sebastian Riedel, "sri@oook.de", Sascha Kiefer, "esskar@cpan.org"
+    Sebastian Riedel, "sri@oook.de"
 
 LICENSE
     This library is free software . You can redistribute it and/or modify it

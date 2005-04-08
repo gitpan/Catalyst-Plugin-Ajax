@@ -4,7 +4,7 @@ use strict;
 use base 'Class::Data::Inheritable';
 use HTML::Ajax;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 __PACKAGE__->mk_classdata('ajax');
 __PACKAGE__->ajax( HTML::Ajax->new );
